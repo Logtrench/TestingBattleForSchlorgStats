@@ -12,6 +12,11 @@ public class Player {
   private int winCount = 0;
   private int loseCount = 0;
   private int gameCount = 0;
+
+  private int gold = 0;
+  private int setGold = 0;
+  private int setDmg = 2;
+  private int price = 1;
   
   public Player(int bearHealth, int num)
   {
@@ -19,12 +24,13 @@ public class Player {
     this.playerNum = num;
   }
 
-  public Player(int bearHealth, int health, int damage, int num)
+  public Player(int bearHealth, int num, int startGold, int dmgPrice)
   {
     this.setBearHealth = bearHealth;
     this.playerNum = num;
-    this.setHealth = health;
-    this.damage = damage;
+    this.setGold = startGold;
+    this.gold = this.setGold;
+    this.price = dmgPrice;
   }
 
   
@@ -50,6 +56,23 @@ public class Player {
     // change the values of player and bear health
     this.bearHealth -= this.damage;
     this.health -= this.bearDamage;
+    
+    //check if gold is in simulation:
+    if(setGold!=0)
+    {
+      //earn gold based on damage taken
+      this.gold += this.bearDamage;
+
+
+      //not a do ... while as should only run when parameters are met
+      while(this.gold>price)
+      {
+        //buy gold whenever possible
+        this.gold = this.gold-price;
+        this.damage++;
+      }
+      
+    }
 
     // check if any or both the user and bear died to switch the panel.
     if (health <= 0 && bearHealth <= 0) {
@@ -57,6 +80,8 @@ public class Player {
 
       this.health = this.setHealth;
       this.bearHealth = this.setBearHealth;
+      this.damage = this.setDmg;
+      this.gold = this.setGold;
 
 
     } else if (health <= 0) {
@@ -65,12 +90,17 @@ public class Player {
 
       this.health = this.setHealth;
       this.bearHealth = this.setBearHealth;
+      this.damage = this.setDmg;
+      this.gold = this.setGold;
+      
     } else if (bearHealth <= 0) {
       this.gameCount++;
       this.winCount++;
 
       this.health = this.setHealth;
       this.bearHealth = this.setBearHealth;
+      this.damage = this.setDmg;
+      this.gold = this.setGold;
     }
   }
 
