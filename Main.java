@@ -31,8 +31,9 @@ class Main {
       for(int i = 0; i<2000000;i++)
       {
         stats = p1.game();
-        System.out.println(p1.toString());
+        
       }
+      System.out.println(p1.toString());
     }else if(check.equals("r"))
     {
       //run 1000 games to check stats
