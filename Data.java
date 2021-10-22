@@ -38,8 +38,10 @@ class Data {
         bwt.write("G-a: " + Main.p1.ga + "\n");
         bwt.write("G-h: " + Main.p1.gh + "\n");
         bwt.write("G-d: " + Main.p1.gd + "\n");
+        bwt.write("WinRate: " + ((double)Main.p1.getWin()/Main.p1.getGame()) + "\n");
         bwt.write("The stats in csa:\n");
         bwt.write(Main.p1.ha + ", " + Main.p1.hh + ", " + Main.p1.hd + ", " + Main.p1.da + ", " + Main.p1.dh + ", " + Main.p1.dd + ", " + Main.p1.ga + ", " + Main.p1.gh + ", " + Main.p1.gd);
+        
         bwt.write("\n**********\n");
 
       }
@@ -79,9 +81,10 @@ class Data {
         bw.write("G-a: " + Main.p1.ga + "\n");
         bw.write("G-h: " + Main.p1.gh + "\n");
         bw.write("G-d: " + Main.p1.gd + "\n");
+        bw.write("WinRate: " + ((double)Main.p1.getWin()/Main.p1.getGame()) + "\n");
         bw.write("The stats in csa:\n");
         bw.write(Main.p1.ha + ", " + Main.p1.hh + ", " + Main.p1.hd + ", " + Main.p1.da + ", " + Main.p1.dh + ", " + Main.p1.dd + ", " + Main.p1.ga + ", " + Main.p1.gh + ", " + Main.p1.gd);
-        bw.write("WinRate: " + ((double)Main.p1.getWin()/Main.p1.getGame()) + "\n");
+        
         bw.write("**********\n");
 
         //close writer

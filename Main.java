@@ -2,7 +2,7 @@ import java.util.*;
 
 class Main {
   //The ai player, 50,#,10,2 is hard mode.
-  public static Player p1 = new Player(50,1,10,2);
+  public static Player p1 = new Player(50,1,10,2,4,0.25,1);
   
   
   public static void main(String[] args) {
@@ -31,8 +31,9 @@ class Main {
       for(int i = 0; i<2000000;i++)
       {
         stats = p1.game();
-        System.out.println(p1.toString());
       }
+      System.out.println(p1.toString());
+       System.out.println("FINAL STATS:\n" + p1.getStats());
     }else if(check.equals("r"))
     {
       //run 1000 games to check stats

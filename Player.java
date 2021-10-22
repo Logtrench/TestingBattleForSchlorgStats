@@ -16,6 +16,8 @@ public class Player {
   double dh = 0;
   double dd = 0;
 
+  double[] weights = {ha,hh,hd,ga,gh,gd,da,dh,dd};
+
   //the win condition to give the network knowledge of victory
   int win;
 
@@ -40,6 +42,11 @@ public class Player {
   private int setGold = 0;
   private int setDmg = 2;
   private int price = 1;
+
+  //for variablity
+  double loseChange;
+  double winChange;
+  double tieChange;
   
   //player constructor
   public Player(int bearHealth, int num)
@@ -50,13 +57,17 @@ public class Player {
   }
 
   //player constructor but with gold start abd price of damage
-  public Player(int bearHealth, int num, int startGold, int dmgPrice)
+  public Player(int bearHealth, int num, int startGold, int dmgPrice, double loseC, double winC, double tieC)
   {
     this.setBearHealth = bearHealth;
     this.playerNum = num;
     this.setGold = startGold;
     this.gold = this.setGold;
     this.price = dmgPrice;
+
+    this.loseChange = loseC;
+    this.winChange = winC;
+    this.tieChange = tieC;
   }
 
   //run the game and find a strategy
@@ -73,6 +84,17 @@ public class Player {
         break;
       }
     }while(true);
+
+    ha = weights[0];
+    hh = weights[1];
+    hd = weights[2];
+    da = weights[3];
+    dh = weights[4];
+    dd = weights[5];
+    ga = weights[6];
+    gh = weights[7];
+    gd = weights[8];
+
     
     //change connections to neurons for strat
     revise();
@@ -85,16 +107,10 @@ public class Player {
   //run the game and test the strategy
   public void gameTest(double stats[])
   {
-    //strategy will equal what is inputted
-    this.ha = stats[0];
-    this.ha = stats[1];
-    this.ha = stats[2];
-    this.ha = stats[3];
-    this.ha = stats[4];
-    this.ha = stats[5];
-    this.ha = stats[6];
-    this.ha = stats[7];
-    this.ha = stats[8];
+    for(int i = 0; i<9;i++)
+    {
+      this.weights[i] = stats[i];
+    }
     
     //same as before, run games
     int gameNum = gameCount;
@@ -151,37 +167,21 @@ public class Player {
 
     // check if any or both the user and bear died to switch the panel.
     if (health <= 0 && bearHealth <= 0) {
-      this.gameCount++;
-      this.tieCount++;
-
-      this.health = this.setHealth;
-      this.bearHealth = this.setBearHealth;
-      this.damage = this.setDmg;
-      this.gold = this.setGold;
+      reset();
       win = 2;
+      this.tieCount++;
 
 
     } else if (health <= 0) {
-      this.gameCount++;
-      this.loseCount++;
-
-      this.health = this.setHealth;
-      this.bearHealth = this.setBearHealth;
-      this.damage = this.setDmg;
-      this.gold = this.setGold;
-
+      reset();
       win = 0;
+      this.loseCount++;
       
     } else if (bearHealth <= 0) {
-      this.gameCount++;
+      reset();
+      win = 1;
       this.winCount++;
 
-      this.health = this.setHealth;
-      this.bearHealth = this.setBearHealth;
-      this.damage = this.setDmg;
-      this.gold = this.setGold;
-
-      win = 1;
     }
   }
 
@@ -194,9 +194,9 @@ public class Player {
     double abstain;
 
     //sum up the values influencing the choices
-    buyHealth = this.health*hh + this.damage*dh + this.gold*gh;
-    buyDamage = this.health*hd + this.damage*dd + this.gold*gd;
-    abstain = this.health*ha + this.damage*da + this.gold*ga;
+    buyHealth = this.health*weights[0] + this.damage*weights[3] + this.gold*weights[6];
+    buyDamage = this.health*weights[1] + this.damage*weights[4] + this.gold*weights[7];
+    abstain = this.health*weights[2] + this.damage*weights[5] + this.gold*weights[8];
 
     //take the largest choice
     if(buyHealth>buyDamage&&buyHealth>abstain)
@@ -213,48 +213,29 @@ public class Player {
 
   public void revise(){
     if(win==0){
-      //most variability, add a number between -1 and 1 and multiply by 4
-      ha += (Math.random()-(Math.random()))*4;
-      hh += (Math.random()-(Math.random()))*4;
-      hd += (Math.random()-(Math.random()))*4;
-
-      da += (Math.random()-(Math.random()))*4;
-      dh += (Math.random()-(Math.random()))*4;
-      dd += (Math.random()-(Math.random()))*4;
-
-      ga += (Math.random()-(Math.random()))*4;
-      gh += (Math.random()-(Math.random()))*4;
-      gd += (Math.random()-(Math.random()))*4;
+      for(int i = 0; i<9; i++)
+      {
+        weights[i] += (Math.random()-(Math.random()))*loseChange;
+        weights[i] = sigmoid(weights[i]);
+      }
 
     }else if(win==1)
     {
       //least variablity, multiply values by a quarter
-      ha += (Math.random()-(Math.random()))*(1/4);
-      hh += (Math.random()-(Math.random()))*(1/4);
-      hd += (Math.random()-(Math.random()))*(1/4);
-
-      da += (Math.random()-(Math.random()))*(1/4);
-      dh += (Math.random()-(Math.random()))*(1/4);
-      dd += (Math.random()-(Math.random()))*(1/4);
-
-      ga += (Math.random()-(Math.random()))*(1/4);
-      gh += (Math.random()-(Math.random()))*(1/4);
-      gd += (Math.random()-(Math.random()))*(1/4);
+      for(int i = 0; i<9; i++)
+      {
+        weights[i] += (Math.random()-(Math.random()))*winChange;
+        weights[i] = sigmoid(weights[i]);
+      }
 
     }else if(win==2)
     {
       //midpoint variablity, keep as is
-      ha += (Math.random()-(Math.random()));
-      hh += (Math.random()-(Math.random()));
-      hd += (Math.random()-(Math.random()));
-
-      da += (Math.random()-(Math.random()));
-      dh += (Math.random()-(Math.random()));
-      dd += (Math.random()-(Math.random()));
-
-      ga += (Math.random()-(Math.random()));
-      gh += (Math.random()-(Math.random()));
-      gd += (Math.random()-(Math.random()));
+      for(int i = 0; i<9; i++)
+      {
+        weights[i] += (Math.random()-(Math.random()))*tieChange;
+        weights[i] = sigmoid(weights[i]);
+      }
     }
   }
 
@@ -289,5 +270,25 @@ public class Player {
   public String toString()
   {
      return ("**********\nPlayer "+this.playerNum + ": \nBearHealth: " + this.getBearHealth() + "\nWins: " + this.getWin() + "\nLosses: " + this.getLose() + "\nTies: " + this.getTie() + "\nGames Played: " + this.getGame() + "\nWinRate: " + ((double)this.getWin()/this.getGame())+ "\nLoseRate: " + ((double)this.getLose()/this.getGame())+"\nTieRate: "+((double)this.getTie()/this.getGame())+"\n**********");
+  }
+
+  //a sigmoid function to make all values between -1 and 1
+  public double sigmoid(double x)
+  {
+    double value = x;
+    value = ((1/ (1 + Math.pow( Math.E, (-1*value) )))*2)-1;
+
+
+    return value;
+  }
+
+  public void reset()
+  {
+      this.gameCount++;
+
+      this.health = this.setHealth;
+      this.bearHealth = this.setBearHealth;
+      this.damage = this.setDmg;
+      this.gold = this.setGold;
   }
 }
