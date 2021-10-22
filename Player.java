@@ -3,7 +3,7 @@ import java.lang.*;
 public class Player {
 
   
-  //neural network
+  //neural network connections
   double ha = 0;
   double hh = 0;
   double hd = 0;
@@ -16,6 +16,7 @@ public class Player {
   double dh = 0;
   double dd = 0;
 
+  //the win condition to give the network knowledge of victory
   int win;
 
   
@@ -28,22 +29,27 @@ public class Player {
   private int setHealth = 10;
   private int playerNum = 0;
 
+  //counting for game sats to see percetages
   private int winCount = 0;
   private int loseCount = 0;
   private int tieCount = 0;
   private int gameCount = 0;
 
+  //new parameters for a strategy implimentation
   private int gold = 0;
   private int setGold = 0;
   private int setDmg = 2;
   private int price = 1;
   
+  //player constructor
   public Player(int bearHealth, int num)
   {
+    //parameters for several players
     this.setBearHealth = bearHealth;
     this.playerNum = num;
   }
 
+  //player constructor but with gold start abd price of damage
   public Player(int bearHealth, int num, int startGold, int dmgPrice)
   {
     this.setBearHealth = bearHealth;
@@ -53,10 +59,12 @@ public class Player {
     this.price = dmgPrice;
   }
 
-  
-  public void game()
+  //run the game and find a strategy
+  public double[] game()
   {
     int gameNum = gameCount;
+    
+    //when the game number changes, one game has finished
     do
     {
       attack();
@@ -65,21 +73,30 @@ public class Player {
         break;
       }
     }while(true);
+    
+    //change connections to neurons for strat
     revise();
+    
+    //returns teh stats at the end for player revision
+    double[] stats = {ha,hh,hd,da,dh,dd,ga,gh,gd};
+    return stats;
   }
 
-  public void gameTest(double ha,double hh, double hd, double da, double dh, double dd, double ga, double gh, double gd)
+  //run the game and test the strategy
+  public void gameTest(double stats[])
   {
-    this.ha = ha;
-    this.hh = hh;
-    this.hd = hd;
-    this.da = da;
-    this.dh = dh;
-    this.dd = dd;
-    this.ga = ga;
-    this.gh = gh;
-    this.gd = gd;
+    //strategy will equal what is inputted
+    this.ha = stats[0];
+    this.ha = stats[1];
+    this.ha = stats[2];
+    this.ha = stats[3];
+    this.ha = stats[4];
+    this.ha = stats[5];
+    this.ha = stats[6];
+    this.ha = stats[7];
+    this.ha = stats[8];
     
+    //same as before, run games
     int gameNum = gameCount;
     do
     {
@@ -110,7 +127,7 @@ public class Player {
       this.gold += this.bearDamage;
 
       String choice = choice();
-
+      //when the choice has been made, do one of them:
       if(choice.equals("health"))
       {
         if(this.gold>=5)
@@ -125,25 +142,11 @@ public class Player {
           this.health +=1;
           this.gold -= 2;
         }
-        
+       //abstain has no function, but has been included for readability 
       }else if (choice.equals("abstain"))
       {
 
       }
-
-
-
-
-
-      /*
-      //not a do ... while as should only run when parameters are met
-      while(this.gold>price)
-      {
-        //buy gold whenever possible
-        this.gold = this.gold-price;
-        this.damage++;
-      }*/
-      
     }
 
     // check if any or both the user and bear died to switch the panel.
@@ -182,16 +185,20 @@ public class Player {
     }
   }
 
-
+  //returns a choice
   public String choice(){
+    
+    //initilization of values
     double buyHealth;
     double buyDamage;
     double abstain;
 
+    //sum up the values influencing the choices
     buyHealth = this.health*hh + this.damage*dh + this.gold*gh;
     buyDamage = this.health*hd + this.damage*dd + this.gold*gd;
     abstain = this.health*ha + this.damage*da + this.gold*ga;
 
+    //take the largest choice
     if(buyHealth>buyDamage&&buyHealth>abstain)
     {
       return "health";
@@ -206,7 +213,7 @@ public class Player {
 
   public void revise(){
     if(win==0){
-      //most variability
+      //most variability, add a number between -1 and 1 and multiply by 4
       ha += (Math.random()-(Math.random()))*4;
       hh += (Math.random()-(Math.random()))*4;
       hd += (Math.random()-(Math.random()))*4;
@@ -221,7 +228,7 @@ public class Player {
 
     }else if(win==1)
     {
-      //least variablity
+      //least variablity, multiply values by a quarter
       ha += (Math.random()-(Math.random()))*(1/4);
       hh += (Math.random()-(Math.random()))*(1/4);
       hd += (Math.random()-(Math.random()))*(1/4);
@@ -236,7 +243,7 @@ public class Player {
 
     }else if(win==2)
     {
-      //midpoint variablity
+      //midpoint variablity, keep as is
       ha += (Math.random()-(Math.random()));
       hh += (Math.random()-(Math.random()));
       hd += (Math.random()-(Math.random()));
@@ -253,7 +260,7 @@ public class Player {
 
 
 
-
+  //all the getter methods.
   public int getBearHealth()
   {
     return this.setBearHealth;
