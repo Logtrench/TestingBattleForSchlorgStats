@@ -1,24 +1,5 @@
-import java.lang.*;
-
 public class Player {
 
-  
-  //neural network
-  double ha = 0;
-  double hh = 0;
-  double hd = 0;
-
-  double ga = 0;
-  double gh = 0;
-  double gd = 0;
-
-  double da = 0;
-  double dh = 0;
-  double dd = 0;
-
-  int win;
-
-  
   // initilization of player properties
   private int health = 10;
   private int damage = 2;
@@ -30,7 +11,6 @@ public class Player {
 
   private int winCount = 0;
   private int loseCount = 0;
-  private int tieCount = 0;
   private int gameCount = 0;
 
   private int gold = 0;
@@ -65,32 +45,6 @@ public class Player {
         break;
       }
     }while(true);
-    revise();
-  }
-
-  public void gameTest(double ha,double hh, double hd, double da, double dh, double dd, double ga, double gh, double gd)
-  {
-    this.ha = ha;
-    this.hh = hh;
-    this.hd = hd;
-    this.da = da;
-    this.dh = dh;
-    this.dd = dd;
-    this.ga = ga;
-    this.gh = gh;
-    this.gd = gd;
-    
-    int gameNum = gameCount;
-    do
-    {
-      attack();
-      if(gameNum!= gameCount)
-      {
-        break;
-      }
-    }while(true);
-    
-    
   }
   
   // the attack method
@@ -109,53 +63,25 @@ public class Player {
       //earn gold based on damage taken
       this.gold += this.bearDamage;
 
-      String choice = choice();
 
-      if(choice.equals("health"))
-      {
-        if(this.gold>=5)
-        {
-          this.health +=3;
-          this.gold -= 5;
-        }
-      }else if(choice.equals("damage"))
-      {
-        if(this.gold>=2)
-        {
-          this.health +=1;
-          this.gold -= 2;
-        }
-        
-      }else if (choice.equals("abstain"))
-      {
-
-      }
-
-
-
-
-
-      /*
       //not a do ... while as should only run when parameters are met
       while(this.gold>price)
       {
         //buy gold whenever possible
         this.gold = this.gold-price;
         this.damage++;
-      }*/
+      }
       
     }
 
     // check if any or both the user and bear died to switch the panel.
     if (health <= 0 && bearHealth <= 0) {
       this.gameCount++;
-      this.tieCount++;
 
       this.health = this.setHealth;
       this.bearHealth = this.setBearHealth;
       this.damage = this.setDmg;
       this.gold = this.setGold;
-      win = 2;
 
 
     } else if (health <= 0) {
@@ -166,8 +92,6 @@ public class Player {
       this.bearHealth = this.setBearHealth;
       this.damage = this.setDmg;
       this.gold = this.setGold;
-
-      win = 0;
       
     } else if (bearHealth <= 0) {
       this.gameCount++;
@@ -177,82 +101,8 @@ public class Player {
       this.bearHealth = this.setBearHealth;
       this.damage = this.setDmg;
       this.gold = this.setGold;
-
-      win = 1;
     }
   }
-
-
-  public String choice(){
-    double buyHealth;
-    double buyDamage;
-    double abstain;
-
-    buyHealth = this.health*hh + this.damage*dh + this.gold*gh;
-    buyDamage = this.health*hd + this.damage*dd + this.gold*gd;
-    abstain = this.health*ha + this.damage*da + this.gold*ga;
-
-    if(buyHealth>buyDamage&&buyHealth>abstain)
-    {
-      return "health";
-    } else if (buyDamage>buyHealth&&buyDamage>abstain)
-    {
-      return "damage";
-    } else
-    {
-      return "abstain";
-    }
-  }
-
-  public void revise(){
-    if(win==0){
-      //most variability
-      ha += (Math.random()-(Math.random()))*4;
-      hh += (Math.random()-(Math.random()))*4;
-      hd += (Math.random()-(Math.random()))*4;
-
-      da += (Math.random()-(Math.random()))*4;
-      dh += (Math.random()-(Math.random()))*4;
-      dd += (Math.random()-(Math.random()))*4;
-
-      ga += (Math.random()-(Math.random()))*4;
-      gh += (Math.random()-(Math.random()))*4;
-      gd += (Math.random()-(Math.random()))*4;
-
-    }else if(win==1)
-    {
-      //least variablity
-      ha += (Math.random()-(Math.random()))*(1/4);
-      hh += (Math.random()-(Math.random()))*(1/4);
-      hd += (Math.random()-(Math.random()))*(1/4);
-
-      da += (Math.random()-(Math.random()))*(1/4);
-      dh += (Math.random()-(Math.random()))*(1/4);
-      dd += (Math.random()-(Math.random()))*(1/4);
-
-      ga += (Math.random()-(Math.random()))*(1/4);
-      gh += (Math.random()-(Math.random()))*(1/4);
-      gd += (Math.random()-(Math.random()))*(1/4);
-
-    }else if(win==2)
-    {
-      //midpoint variablity
-      ha += (Math.random()-(Math.random()));
-      hh += (Math.random()-(Math.random()));
-      hd += (Math.random()-(Math.random()));
-
-      da += (Math.random()-(Math.random()));
-      dh += (Math.random()-(Math.random()));
-      dd += (Math.random()-(Math.random()));
-
-      ga += (Math.random()-(Math.random()));
-      gh += (Math.random()-(Math.random()));
-      gd += (Math.random()-(Math.random()));
-    }
-  }
-
-
-
 
   public int getBearHealth()
   {
@@ -272,11 +122,7 @@ public class Player {
   }
   public int getTie()
   {
-    return this.tieCount;
-  }
-
-  public String getStats(){
-    return "H-a: " + ha + "\nH-h: " + hh + "\nH-d: " + hd + "\nD-a: " + da + "\nD-h: " + dh + "\nD-d: " + dd + "\nG-a: " + ga + "\nG-h: " + gh + "\nG-d: " + gd;
+    return (this.gameCount-this.loseCount)-this.winCount;
   }
 
   public String toString()
